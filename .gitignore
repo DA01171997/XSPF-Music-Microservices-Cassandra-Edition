@@ -1,0 +1,13 @@
+*.pyc
+api.cfg
+__pycache__/*
+notes.txt
+music.db
+track1.db
+track2.db
+track3.db
+test.html
+trackTest/*
+playlistTest/*
+data/*
+music/*

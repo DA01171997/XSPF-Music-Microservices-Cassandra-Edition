@@ -1,0 +1,5 @@
+{
+	"playTitle" : "BAD",
+	"playUserID": 3,
+	"playListOfTracks" : ["file:///music/artist/album/track00.mp3", "file:///music/artist/album/track01.mp3", "file:///music/artist/album/track03.mp3", "file:///music/artist/album/track04.mp3", "file:///music/artist/album/track08.mp3"]
+}

@@ -1,0 +1,6 @@
+{
+	"playTitle" : "Playlist 04",
+	"playUserID": 4,
+	"playDesc" : "This is my playlist for bad music.",
+	"playListOfTracks" : ["http://localhost:8000/media/song00.mp3", "http://localhost:8000/media/song01.mp3", "http://localhost:8000/media/song02.mp3", "http://localhost:8000/media/song03.mp3", "http://localhost:8000/media/song05.mp3", "http://localhost:8000/media/song10.mp3"]
+}

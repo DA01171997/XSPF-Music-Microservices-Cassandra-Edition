@@ -1,0 +1,187 @@
+Team Members:
+Duy Do - duy.ado@csu.fullerton.edu
+Liam Fitzpatrick - lfitzpatrick0@csu.fullerton.edu
+Wellson Pan - WellsonPan@csu.fullerton.edu
+
+XSPF Microservice
+    URL: /api/v1/collections/playlists/<int:id>.xspf
+    Usage:
+        GET: Create and return an xspf file for use
+            Example: http://127.0.0.1:5400/api/v1/collections/playlists/1.xspf
+
+Descriptions Microservice
+    URL: /api/v1/descriptions/
+    Usage:   
+        POST: Create description for a track.
+            Expect: 
+                    Header to have: 'Content-Type: application/json'
+                    Data is a json that contains
+                        {
+                            "trackMediaURL": "inputhere",
+                            "userUserName": "inputhere",
+                            "descriptionDesc": "inputhere",
+                            "trackTitle": "inputhere"
+                        }
+
+    URL: /api/v1/descriptions/users/<string:username>/descriptions
+    Usage: 
+        GET: Get user description of track by trackMediaURL.
+            Example: http://127.0.0.1:8000/api/v1/descriptions/users/WassupMan404/descriptions?trackMediaURL=wwww%2Etrack%2EHURT
+
+    URL: /api/v1/descriptions/users/<string:username>/descriptions/all
+    Usage:
+        GET: Get all descriptions from the user.
+            Example: http://127.0.0.1:8000/api/v1/descriptions/users/WassupMan404/descriptions/all
+
+
+Users Microservice
+    URL: /api/v1/users/register
+    Usage:
+        GET: Get all user informations from users table.
+            Example: http://127.0.0.1:8000/api/v1/users/register
+        POST: Register a user into the database
+            Expect: 
+                    Header to have: 'Content-Type: application/json'
+                    Data is a json that contains
+                        {
+                            "userName": "inputhere",
+                            "userUserName": "inputhere",
+                            "userEmail": "inputhere",
+                            "userPassword": "inputhere"
+                        }
+
+    URL: /api/v1/users/id/<int:id>
+    Usage:
+        GET: Get all informations except password for user from user id.
+            Example: http://127.0.0.1:8000/api/v1/users/id/1
+        DELETE: Delete user from user table by user id.
+            Example:
+                    curl --verbose \
+                    --header 'Content-Type: application/json' \
+                    --request DELETE \
+                    http://127.0.0.1:8000/api/v1/users/id/2
+
+    URL: /api/v1/users/<string:username>
+    Usage:
+        GET:  Get all informations except password for user from user username.
+            Example: http://127.0.0.1:8000/api/v1/users/WassupMan404
+
+    URL: /api/v1/users/login
+    Usage:
+        POST: Authenticate user login informations.
+            Expect: 
+                    Header to have: 'Content-Type: application/json'
+                    Data is a json that contains
+                        {
+                            "userUserName": "inputhere",
+                            "userPassword": "inputhere"
+                        }
+
+    URL: /api/v1/users/<string:username>/password
+    Usage:
+        PATCH: Update user password.
+            Example: http://127.0.0.1:8000/api/v1/users/WassupMan404/password
+            Expect:
+                    Header to have: 'Content-Type: application/json'
+                    Data is a json that contains
+                        {
+                            "userUserName": "inputhere",
+                            "userPassword": "inputhere",
+                            "userNewPassword": "inputhere"
+                        }
+
+Tracks Microservice
+    DISCLAIMER: The tracks microservice testing script and jsons in the trackTest need to have a valid uuid to be inserted to properly work.
+                The uuid has to be copied into the script and jsons after calling the get all tracks in the browser.
+
+    URL: /api/v1/collections/tracks/all
+    Usage:
+        GET: Get all tracks in the database
+            Example: http://127.0.0.1:8000/api/v1/collections/tracks/all
+
+    URL: /api/v1/collections/tracks/<int:trackID>/
+    Usage:
+        GET: Get the track with that trackID from the database
+            Example: http://127.0.0.1:8000/api/v1/collections/tracks/1
+        DELETE: Delete the track with that trackID from the database
+            Example: http://127.0.0.1:8000/api/v1/collections/tracks/1
+                    or
+                    curl --verbose \
+                         --request DELETE \
+                         --header 'Content-Type: application/json' \
+                         http://127.0.0.1:8000/api/v1/collections/tracks/1
+
+    URL: /api/v1/collections/tracks
+    Usage:
+        GET: Get the tracks with valid arguments in the URL
+            Expect:
+                It expects trackTitle, trackAlbum, or trackArtist in the arguments
+                    Example: http://127.0.0.1:8000/api/v1/collections/tracks?trackTitle=<insertTrackTitleHere>
+        POST: Create a track and insert it into the database
+            Expect:
+                Header to have 'Content-Type: application/json'
+                Data is a json that contains
+                    {
+                        "trackTitle" : "inputHere",
+                        "trackAlbum" : "inputHere",
+                        "trackArtist" : "inputHere",
+                        "trackLength" : "inputHere",
+                        "trackMediaURL" : "inputHere",
+                        "trackArt" : "inputHere"
+                    }
+                "trackArt" is optional so it can be left out
+        PATCH: Update an already existing entry in the database
+            Expect:
+                Header to have 'Content-Type: application/json'
+                Data is a json that contains
+                    {
+                        "trackID" : "inputHere"
+                        "trackTitle" : "inputHere",
+                        "trackAlbum" : "inputHere",
+                        "trackArtist" : "inputHere",
+                        "trackLength" : "inputHere",
+                        "trackMediaURL" : "inputHere"
+                        "tracKArt" : "inputHere"
+                    }
+                The trackID is a uuid that has to be passed in as a string
+                
+Playlists Microservice
+    URL: /api/v1/collections/playlists/all
+    Usage:
+        GET: Retrieves all the playlists in the database
+            Example: http://127.0.0.1:8000/api/v1/collections/playlists/all
+
+    URL: /api/v1/collections/playlists/<int:playID>
+    Usage:
+        GET: Retrieves the playlist with that playID
+            Example: http://127.0.0.1:8000/api/v1/collections/playlists/1
+        DELETE: Deletes the playlist with that playID from the database
+            Example: http://127.0.0.1:8000/api/v1/collections/playlists/3
+                    or
+                    curl --verbose \
+                         --request DELETE \
+                         --header 'Content-Type: application/json' \
+                         http://127.0.0.1:8000/api/v1/collections/playlists/3
+
+    URL: /api/v1/collections/playlists/users/<string:username>/playlists
+    Usage:
+        GET: Retrieves the playlists created by the user with this userUserName
+            Example:http://127.0.0.1:8000/api/v1/collections/playlists/users/ad69/playlists
+
+    URL: /api/v1/collections/playlists
+    Usage:
+        GET: Retrieves the playlists with the given arguments
+            Expect:
+                It expects playID, playTitle, or userName passed as arguments
+                Example: http://127.0.0.1:8000/api/v1/collections/playlists?playID=1
+        POST: Create a playlist and insert it into the database. Parse the playListOfTracks and insert it into the database
+            Expect:
+                Header to have: 'Content-Type: application/json'
+                Data is a json that contains
+                    {
+	                    "playTitle" : "inputHere",
+	                    "playUserID": numHere,
+	                    "playDesc" : "inputHere",
+	                    "playListOfTracks" : ["inputOneHere", "inputTwoHere", "inputThreeHere"]
+                    }
+                "playDesc" is optional so it can be left out

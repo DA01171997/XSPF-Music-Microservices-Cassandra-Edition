@@ -1,0 +1,8 @@
+{
+	"trackTitle" : "Track title 06",
+	"trackAlbum" : "The 00 album",
+	"trackArtist" : "The 00 artist",
+	"trackLength" : "120",
+	"trackMediaURL" : "http://localhost:8000/media/song06.mp3",
+	"trackArt" : "file:///music/art/ablum/06"
+}
