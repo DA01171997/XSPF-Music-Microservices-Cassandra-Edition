@@ -1,0 +1,1 @@
+docker exec -i scylla cqlsh < "/home/duydo/Desktop/temp8/XSPF-Music-Microservices-Cassandra-Edition/cql/init.cql"

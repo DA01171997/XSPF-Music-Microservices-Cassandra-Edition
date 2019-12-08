@@ -43,42 +43,12 @@ echo
 echo
 echo
 
-echo "POSITIVE CASE: GET user by id"
-echo "----------------------------------------------------------------------------------"
-curl --verbose \
-	--header 'Content-Type: application/json' \
-	--request GET \
-	http://127.0.0.1:8000/api/v1/users/id/1
-echo
-echo
-echo
-
-echo "POSITIVE CASE: GET user by id"
-echo "----------------------------------------------------------------------------------"
-curl --verbose \
-	--header 'Content-Type: application/json' \
-	--request GET \
-	http://127.0.0.1:8000/api/v1/users/id/2
-echo
-echo
-echo
-
-echo "NEGATIVE CASE: GET user by id - invalid id"
-echo "----------------------------------------------------------------------------------"
-curl --verbose \
-	--header 'Content-Type: application/json' \
-	--request GET \
-	http://127.0.0.1:8000/api/v1/users/id/100
-echo
-echo
-echo
-
-echo "POSITIVE CASE: DELETE user by id "
+echo "POSITIVE CASE: DELETE user by userUserName "
 echo "----------------------------------------------------------------------------------"
 curl --verbose \
 	--header 'Content-Type: application/json' \
 	--request DELETE \
-	http://127.0.0.1:8000/api/v1/users/id/2
+	http://127.0.0.1:8000/api/v1/users/unitTestUser2
 echo
 echo
 echo
@@ -98,7 +68,7 @@ echo "NEGATIVE CASE: DELETE user by id -  id no longer valid "
 curl --verbose \
 	--header 'Content-Type: application/json' \
 	--request DELETE \
-	http://127.0.0.1:8000/api/v1/users/id/2
+	http://127.0.0.1:8000/api/v1/users/unitTestUser2
 echo
 echo
 echo

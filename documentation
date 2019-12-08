@@ -3,6 +3,8 @@ Duy Do - duy.ado@csu.fullerton.edu
 Liam Fitzpatrick - lfitzpatrick0@csu.fullerton.edu
 Wellson Pan - WellsonPan@csu.fullerton.edu
 
+*Note* for the URL example: /api/v1/descriptions/users/<string:username>/descriptions - string:username == userUserName
+
 XSPF Microservice
     URL: /api/v1/collections/playlists/<int:id>.xspf
     Usage:
@@ -50,21 +52,16 @@ Users Microservice
                             "userPassword": "inputhere"
                         }
 
-    URL: /api/v1/users/id/<int:id>
-    Usage:
-        GET: Get all informations except password for user from user id.
-            Example: http://127.0.0.1:8000/api/v1/users/id/1
-        DELETE: Delete user from user table by user id.
-            Example:
-                    curl --verbose \
-                    --header 'Content-Type: application/json' \
-                    --request DELETE \
-                    http://127.0.0.1:8000/api/v1/users/id/2
-
     URL: /api/v1/users/<string:username>
     Usage:
         GET:  Get all informations except password for user from user username.
             Example: http://127.0.0.1:8000/api/v1/users/WassupMan404
+        DELETE: Delete user from user table by username.
+            Example:
+                    curl --verbose \
+                    --header 'Content-Type: application/json' \
+                    --request DELETE \
+                    http://127.0.0.1:8000/api/v1/WassupMan404
 
     URL: /api/v1/users/login
     Usage:

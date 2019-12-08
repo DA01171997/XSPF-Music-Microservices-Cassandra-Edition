@@ -6,6 +6,7 @@ rm track3.db
 sudo apt install python3-pip
 pip3 install --user -r requirements.txt
 sqlite3 music.db < queries/initQueries/init_db.sql
+./dev_command/init_cassandra_db.sh
 sqlite3 track1.db < queries/initQueries/init_track1_db.sql
 sqlite3 track2.db < queries/initQueries/init_track2_db.sql
 sqlite3 track3.db < queries/initQueries/init_track3_db.sql
