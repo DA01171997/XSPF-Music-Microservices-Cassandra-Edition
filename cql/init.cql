@@ -1,4 +1,3 @@
-
 DROP KEYSPACE IF EXISTS music;
 CREATE KEYSPACE music
     WITH replication = {
@@ -22,7 +21,7 @@ CREATE TABLE tracks (
     trackLength int,
     trackMediaURL text,
     trackArt text,
-    PRIMARY KEY (trackTitle)
+    PRIMARY KEY (trackTitle,trackArtist)
 );
 
 CREATE TABLE descriptions (
@@ -42,3 +41,4 @@ CREATE TABLE playlists (
 );
 
 CREATE INDEX playlists_playUserUserName_index ON playlists(playUserUserName);
+CREATE INDEX tracks_trackMediaURL_index ON tracks(trackMediaURL);

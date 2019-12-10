@@ -42,8 +42,8 @@ def allPlaylists():
 @app.route("/api/v1/collections/playlists/<string:playTitle>", methods = ["GET", "DELETE"])
 def filterPlaylistsByID(playTitle):
     if request.method == "GET":
-        select_all_playlist_cql = "SELECT * FROM music.playlists WHERE playTitle='{}'".format(playTitle)
-        rows = session.execute(select_all_playlist_cql)
+        select_playlist_withTitle_cql = "SELECT * FROM music.playlists WHERE playTitle='{}'".format(playTitle)
+        rows = session.execute(select_playlist_withTitle_cql)
         result = []
         for row in rows:
             data = {}

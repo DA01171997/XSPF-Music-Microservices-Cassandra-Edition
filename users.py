@@ -106,7 +106,7 @@ def delete_user_by_username(username):
         if count==1:
             delete_user_cql = "DELETE FROM music.users WHERE userusername = '{}'".format(username)
             session.execute(delete_user_cql)
-            return { 'Message':'DELETE REQUEST ACCEPTED - BUT NOT GUARENTEED IN EVENTUAL CONSISTENT DB'}, status.HTTP_202_ACCEPTED
+            return { 'Message':'DELETE REQUEST ACCEPTED - BUT NOT GUARENTEED RIGHT NOW IN EVENTUAL CONSISTENT DB'}, status.HTTP_202_ACCEPTED
         elif count==0:
             return { 'Error': "User Doesn't Exists" }, status.HTTP_404_NOT_FOUND 
     except Exception as e:
