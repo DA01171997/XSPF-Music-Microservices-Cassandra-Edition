@@ -64,9 +64,10 @@ def filterPlaylistsByID(playTitle):
                 count+=1
             if count==1:
                 delete_playlist_cql = "DELETE FROM music.playlists WHERE playTitle = '{}'".format(playTitle)
+                session.execute(delete_playlist_cql)
                 return { 'Message':'DELETE REQUEST ACCEPTED - BUT NOT GUARENTEED IN EVENTUAL CONSISTENT DB'}, status.HTTP_202_ACCEPTED
             elif count==0:
-                return { 'Error': "User Doesn't Exists" }, status.HTTP_404_NOT_FOUND
+                return { 'Error': "Playlist Doesn't Exists" }, status.HTTP_404_NOT_FOUND
         except Exception as e:
             return { 'Error': str(e) }, status.HTTP_409_CONFLICT
         return { 'Error': str(e) }, status.HTTP_409_CONFLICT
@@ -102,7 +103,7 @@ def createPlaylist(playlist):
     playlist = request.data
     requiredFields = ["playTitle", "playUserUserName", "playListOfTracks"]
     if not all([field in playlist for field in requiredFields]):
-        raise exceptions.ParseError("HERE")
+        raise exceptions.ParseError()
     if "playDesc" not in playlist:
         playlist["playDesc"] = ""
     try:
