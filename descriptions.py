@@ -4,11 +4,15 @@ import pugsql
 from flask import request, jsonify, Response
 from flask_api import status, exceptions
 
+from cassandra.cluster import Cluster
+cluster = Cluster(['172.17.0.2'])
+session = cluster.connect()
+session.set_keyspace('music')
+
+
 app = flask_api.FlaskAPI(__name__,static_url_path='')
 app.config.from_envvar('APP_CONFIG')
 
-queries = pugsql.module('queries/descriptionQueries/')
-queries.connect(app.config['DATABASE_URL'])
 
 #used to check if POST request header is application/json
 def validContentType(request, type='application/json'):
@@ -34,7 +38,8 @@ def create_description():
 	if not all([field in description for field in required_fields]):
 		raise exceptions.ParseError()
 	try:
-		description['descriptionID'] = queries.create_description(**description)
+		insert_description_cql = "INSERT INTO music.descriptions (trackTitle,descriptionDesc,trackMediaURL,userUserName) VALUES ('{}','{}','{}', '{}')".format(description['trackTitle'],description['descriptionDesc'],description['trackMediaURL'],description['userUserName'])
+		session.execute(insert_description_cql)
 	except Exception as e:
 		return { 'Error': str(e) }, status.HTTP_409_CONFLICT
 	return description, status.HTTP_201_CREATED
@@ -47,27 +52,21 @@ def user_description(username):
 
 def filter_descriptions(query_parameters):
 	trackMediaURL = query_parameters.get('trackMediaURL')
-	query = "SELECT * FROM descriptions WHERE"
-	to_filter = []
+	result = []
+	data={}
+	count = 0
 	if trackMediaURL:
-		query += ' trackMediaURL=? AND'
-		to_filter.append(trackMediaURL)
-	if not (trackMediaURL):
-		raise exceptions.NotFound()
-	query = query[:-4] + ';'
-	results = queries._engine.execute(query, to_filter).fetchall()
-	data = list(map(dict, results))
-	if data:
-			return data, status.HTTP_200_OK
-	return { 'Error': str("Not Found") }, status.HTTP_404_NOT_FOUND
-
-#route to GET user all  by user
-@app.route('/api/v1/descriptions/users/<string:username>/descriptions/all', methods=['GET'])
-def user_description_all(username):
-	if request.method =='GET':
-		userUserName = username
-		all_description= queries.description_all(userUserName=userUserName)
-		data = list(all_description)
-		if data:
-			return data, status.HTTP_200_OK
-		return { 'Error': str("Not Found") }, status.HTTP_404_NOT_FOUND
+		select_description_cql = "SELECT * FROM music.descriptions WHERE trackMediaURL='{}'".format(trackMediaURL)
+		rows = session.execute(select_description_cql)
+		for row in rows:
+			data['trackTitle'] = row.tracktitle
+			data['descriptionDesc'] = row.descriptiondesc
+			data['trackMediaURL'] = row.userusername
+			data['userUserName'] = row.trackmediaurl
+			count+=1
+			result.append(data)
+		if count==0:
+			return { 'Error': str("Not Found") }, status.HTTP_404_NOT_FOUND
+		if count>0:
+			return result, status.HTTP_200_OK
+	return { 'Error': str("BAD Request") }, status.HTTP_400_BAD_REQUEST

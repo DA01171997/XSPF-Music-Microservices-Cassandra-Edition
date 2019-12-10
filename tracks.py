@@ -6,6 +6,12 @@ import pugsql
 import sqlite3
 import uuid
 
+from cassandra.cluster import Cluster
+cluster = Cluster(['172.17.0.2'])
+session = cluster.connect()
+session.set_keyspace('music')
+
+
 app = flask_api.FlaskAPI(__name__)
 app.config.from_envvar("APP_CONFIG")
 
@@ -99,6 +105,33 @@ def tracks():
         return editTrack(request.data)
     
 
+# def createTrack(track):
+#     track = request.data
+#     requiredFields = ["trackTitle", "trackAlbum", "trackArtist", "trackLength", "trackMediaURL"]
+    
+#     if not all([field in track for field in requiredFields]):
+#         raise exceptions.ParseError()
+#     if "trackArt" not in track:
+#         track["trackArt"] = ""
+#     try:
+#         uniqueID = uuid.uuid4()
+#         shardKey = uniqueID.int % 3
+#         if shardKey == 0:
+#             track['trackID'] = uniqueID
+#             trackQueries.create_track(**track)
+#         elif shardKey == 1:
+#             track['trackID'] = uniqueID
+#             trackQueries2.create_track(**track)
+#         elif shardKey == 2:
+#             track['trackID'] = uniqueID
+#             trackQueries3.create_track(**track)
+#         else:
+#             raise exceptions.ParseError()
+#     except Exception as e:
+#         return { 'error': str(e) }, status.HTTP_409_CONFLICT
+        
+#     return track, status.HTTP_201_CREATED
+
 def createTrack(track):
     track = request.data
     requiredFields = ["trackTitle", "trackAlbum", "trackArtist", "trackLength", "trackMediaURL"]
@@ -108,19 +141,10 @@ def createTrack(track):
     if "trackArt" not in track:
         track["trackArt"] = ""
     try:
-        uniqueID = uuid.uuid4()
-        shardKey = uniqueID.int % 3
-        if shardKey == 0:
-            track['trackID'] = uniqueID
-            trackQueries.create_track(**track)
-        elif shardKey == 1:
-            track['trackID'] = uniqueID
-            trackQueries2.create_track(**track)
-        elif shardKey == 2:
-            track['trackID'] = uniqueID
-            trackQueries3.create_track(**track)
-        else:
-            raise exceptions.ParseError()
+        count =0
+        insert_track_cql = "INSERT INTO tracks"
+        # else:
+        #     raise exceptions.ParseError()
     except Exception as e:
         return { 'error': str(e) }, status.HTTP_409_CONFLICT
         

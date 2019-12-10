@@ -25,15 +25,11 @@ Descriptions Microservice
                             "trackTitle": "inputhere"
                         }
 
-    URL: /api/v1/descriptions/users/<string:username>/descriptions
+    URL: /api/v1/descriptions/users/<string:username>/descriptions?trackMediaURL=trackMediaURL
     Usage: 
         GET: Get user description of track by trackMediaURL.
-            Example: http://127.0.0.1:8000/api/v1/descriptions/users/WassupMan404/descriptions?trackMediaURL=wwww%2Etrack%2EHURT
+            Example: http://127.0.0.1:8000/api/v1/descriptions/users/WassupMan404/descriptions?trackMediaURL=http://localhost:8000/media/song00.mp3
 
-    URL: /api/v1/descriptions/users/<string:username>/descriptions/all
-    Usage:
-        GET: Get all descriptions from the user.
-            Example: http://127.0.0.1:8000/api/v1/descriptions/users/WassupMan404/descriptions/all
 
 
 Users Microservice
@@ -61,7 +57,7 @@ Users Microservice
                     curl --verbose \
                     --header 'Content-Type: application/json' \
                     --request DELETE \
-                    http://127.0.0.1:8000/api/v1/WassupMan404
+                    http://127.0.0.1:8000/api/v1/users/WassupMan404
 
     URL: /api/v1/users/login
     Usage:
