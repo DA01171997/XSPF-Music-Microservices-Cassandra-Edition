@@ -62,6 +62,8 @@ def filterTrackByID(trackTitle,trackArtist):
                 data['trackArt'] = row.trackart
             if data:
                 return data, status.HTTP_200_OK
+            else:
+                return { 'Error': "Not Found" }, status.HTTP_404_NOT_FOUND
         except Exception as e:
             return { 'Error': str(e) }, status.HTTP_409_CONFLICT
         return { 'Error': "Not Found" }, status.HTTP_404_NOT_FOUND
@@ -88,7 +90,7 @@ def tracks():
     if request.method == 'GET':
         results = filterTracks(request.args)
         if len(results) is 0:
-            raise exceptions.NotFound()
+            return { 'Error': str("Not Found") }, status.HTTP_404_NOT_FOUND
         else:
             return results
     if request.method == 'POST':

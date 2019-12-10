@@ -27,17 +27,20 @@ def home():
 @app.route('/api/v1/users/register', methods=['POST', 'GET'])
 def register():
     if request.method=='GET':
-        cql = "SELECT * FROM users;"
-        rows = session.execute(cql)
-        count = 0
-        result = []
-        for row in rows:
-            data = {}
-            data['userName'] = row.username
-            data['userUserName'] = row.userusername
-            data['userEmail'] = row.useremail
-            result.append(data)
-        return result, status.HTTP_200_OK
+        try:
+            cql = "SELECT * FROM users;"
+            rows = session.execute(cql)
+            count = 0
+            result = []
+            for row in rows:
+                data = {}
+                data['userName'] = row.username
+                data['userUserName'] = row.userusername
+                data['userEmail'] = row.useremail
+                result.append(data)
+            return result, status.HTTP_200_OK
+        except Exception as e:
+            return { 'Error': str(e) }, status.HTTP_409_CONFLICT
     elif request.method=='POST':
         valid = validContentType(request)
         if valid is not True:
