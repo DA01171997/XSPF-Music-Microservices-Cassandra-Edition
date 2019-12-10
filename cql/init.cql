@@ -22,8 +22,7 @@ CREATE TABLE tracks (
     trackLength int,
     trackMediaURL text,
     trackArt text,
-    descriptionDesc map<text,text>,
-    PRIMARY KEY ((trackTitle,trackArtist))
+    PRIMARY KEY (trackTitle)
 );
 
 CREATE TABLE descriptions (
@@ -33,3 +32,13 @@ CREATE TABLE descriptions (
     trackMediaURL text,
     PRIMARY KEY (trackMediaURL, userUserName)
 );
+
+CREATE TABLE playlists (
+    playTitle text,
+    playUserUserName text,
+    playDesc text,
+    playListOfTracks list<text>,
+    PRIMARY KEY (playTitle)
+);
+
+CREATE INDEX playlists_playUserUserName_index ON playlists(playUserUserName);

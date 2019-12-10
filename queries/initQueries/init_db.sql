@@ -3,10 +3,10 @@ DROP TABLE IF EXISTS playlists;
 CREATE TABLE playlists (
     	playID INTEGER primary key,
     	playTitle TEXT NOT NULL,
-    	playUserID INT,
+    	playUserUserName INT,
     	playDesc TEXT,
 	playListOfTracks TEXT NOT NULL,
-	FOREIGN KEY(playUserID) REFERENCES users (userID) ON DELETE CASCADE
+	FOREIGN KEY(playUserUserName) REFERENCES users (userID) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS users;

@@ -34,7 +34,7 @@ def getTrackInfoFromURL(urls, tracks, playlist):
     x = xspf.Xspf()
     x.title = playlist['playTitle']
 
-    user = getUserByID(playlist['playUserID'])
+    user = getUserByID(playlist['playUserUserName'])
 
     x.creator = user['userUserName']
 

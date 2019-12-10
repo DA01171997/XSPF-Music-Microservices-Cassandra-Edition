@@ -48,21 +48,21 @@ def create_description():
 @app.route('/api/v1/descriptions/users/<string:username>/descriptions', methods=['GET'])
 def user_description(username):
 	if request.method =='GET':
-		return filter_descriptions(request.args)
+		return filter_descriptions(request.args, username)
 
-def filter_descriptions(query_parameters):
+def filter_descriptions(query_parameters, username):
 	trackMediaURL = query_parameters.get('trackMediaURL')
 	result = []
 	data={}
 	count = 0
 	if trackMediaURL:
-		select_description_cql = "SELECT * FROM music.descriptions WHERE trackMediaURL='{}'".format(trackMediaURL)
+		select_description_cql = "SELECT * FROM music.descriptions WHERE trackMediaURL='{}' AND userUserName='{}'".format(trackMediaURL,username)
 		rows = session.execute(select_description_cql)
 		for row in rows:
 			data['trackTitle'] = row.tracktitle
 			data['descriptionDesc'] = row.descriptiondesc
-			data['trackMediaURL'] = row.userusername
-			data['userUserName'] = row.trackmediaurl
+			data['trackMediaURL'] = row.trackmediaurl
+			data['userUserName'] = row.userusername
 			count+=1
 			result.append(data)
 		if count==0:

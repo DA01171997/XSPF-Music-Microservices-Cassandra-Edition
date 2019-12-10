@@ -3,7 +3,6 @@ Duy Do - duy.ado@csu.fullerton.edu
 Liam Fitzpatrick - lfitzpatrick0@csu.fullerton.edu
 Wellson Pan - WellsonPan@csu.fullerton.edu
 
-*Note* for the URL example: /api/v1/descriptions/users/<string:username>/descriptions - string:username == userUserName
 
 XSPF Microservice
     URL: /api/v1/collections/playlists/<int:id>.xspf
@@ -25,7 +24,7 @@ Descriptions Microservice
                             "trackTitle": "inputhere"
                         }
 
-    URL: /api/v1/descriptions/users/<string:username>/descriptions?trackMediaURL=trackMediaURL
+    URL: /api/v1/descriptions/users/<string:userUserName>/descriptions?trackMediaURL=trackMediaURL
     Usage: 
         GET: Get user description of track by trackMediaURL.
             Example: http://127.0.0.1:8000/api/v1/descriptions/users/WassupMan404/descriptions?trackMediaURL=http://localhost:8000/media/song00.mp3
@@ -48,11 +47,11 @@ Users Microservice
                             "userPassword": "inputhere"
                         }
 
-    URL: /api/v1/users/<string:username>
+    URL: /api/v1/users/<string:userUserName>
     Usage:
-        GET:  Get all informations except password for user from user username.
+        GET:  Get all informations except password for user from user userUserName.
             Example: http://127.0.0.1:8000/api/v1/users/WassupMan404
-        DELETE: Delete user from user table by username.
+        DELETE: Delete user from user table by userUserName.
             Example:
                     curl --verbose \
                     --header 'Content-Type: application/json' \
@@ -70,7 +69,7 @@ Users Microservice
                             "userPassword": "inputhere"
                         }
 
-    URL: /api/v1/users/<string:username>/password
+    URL: /api/v1/users/<string:userUserName>/password
     Usage:
         PATCH: Update user password.
             Example: http://127.0.0.1:8000/api/v1/users/WassupMan404/password
@@ -144,37 +143,33 @@ Playlists Microservice
         GET: Retrieves all the playlists in the database
             Example: http://127.0.0.1:8000/api/v1/collections/playlists/all
 
-    URL: /api/v1/collections/playlists/<int:playID>
+    URL: /api/v1/collections/playlists/<string:playTitle>
     Usage:
         GET: Retrieves the playlist with that playID
-            Example: http://127.0.0.1:8000/api/v1/collections/playlists/1
+            Example: http://127.0.0.1:8000/api/v1/collections/playlists/Playlist 01
         DELETE: Deletes the playlist with that playID from the database
-            Example: http://127.0.0.1:8000/api/v1/collections/playlists/3
+            Example: http://127.0.0.1:8000/api/v1/collections/playlists/Playlist 01
                     or
                     curl --verbose \
                          --request DELETE \
                          --header 'Content-Type: application/json' \
-                         http://127.0.0.1:8000/api/v1/collections/playlists/3
+                         http://127.0.0.1:8000/api/v1/collections/playlists/Playlist 01
 
-    URL: /api/v1/collections/playlists/users/<string:username>/playlists
+    URL: /api/v1/collections/playlists/users/<string:playUserUserName>/playlists
     Usage:
         GET: Retrieves the playlists created by the user with this userUserName
             Example:http://127.0.0.1:8000/api/v1/collections/playlists/users/ad69/playlists
 
     URL: /api/v1/collections/playlists
     Usage:
-        GET: Retrieves the playlists with the given arguments
-            Expect:
-                It expects playID, playTitle, or userName passed as arguments
-                Example: http://127.0.0.1:8000/api/v1/collections/playlists?playID=1
         POST: Create a playlist and insert it into the database. Parse the playListOfTracks and insert it into the database
             Expect:
                 Header to have: 'Content-Type: application/json'
                 Data is a json that contains
                     {
 	                    "playTitle" : "inputHere",
-	                    "playUserID": numHere,
+	                    "playUserUserName": numHere,
 	                    "playDesc" : "inputHere",
-	                    "playListOfTracks" : ["inputOneHere", "inputTwoHere", "inputThreeHere"]
+	                    "playListOfTracks" : ["http://localhost:8000/media/song00.mp3", "http://localhost:8000/media/song01.mp3", "http://localhost:8000/media/song02.mp3"]
                     }
                 "playDesc" is optional so it can be left out
