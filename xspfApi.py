@@ -6,6 +6,9 @@ from flask_api import status, exceptions
 import xml.dom.minidom
 from requests.exceptions import HTTPError
 
+from pymemcache.client import base
+from pymemcache import fallback
+
 app = flask_api.FlaskAPI(__name__,static_url_path='')
 
 def getPlayListByID(id, playlists):
@@ -46,21 +49,91 @@ def getTrackInfoFromURL(urls, tracks, playlist):
                 x.add_track(tr)
     return x
 
+def json_serializer(key, value):
+    if type(value) == str:
+        return value, 1
+    return json.dumps(value), 2
+
+def json_deserializer(key, value, flags):
+   if flags == 1:
+       return value
+   if flags == 2:
+       return json.loads(value)
+   raise Exception("Unknown serialization format")
+
+
+# @app.route("/api/v1/collections/playlists/<string:playTitle>.xspf", methods = ['GET'])
+# def generate_xspf(playTitle):
+#     try:
+#         key = playTitle
+#         key = key.replace(" ", "_")
+#         client = base.Client(('localhost', 11211),serializer=json_serializer,deserializer=json_deserializer)
+#         playlistURL = "http://localhost:8000/api/v1/collections/playlists/" + playTitle
+#         cache = client.get(key)
+#         # print(key)
+#         if cache is None:
+#             print("not cached")
+#             # print('here0')
+#             results = requests.get(playlistURL).json()
+#             # print('here022')
+#             # print(results)
+#             playlist = results[0]
+#             # print('here0223')
+#             tracks = requests.get("http://localhost:8000/api/v1/collections/tracks/all").json()
+#             # print('here1')
+#             if playlist == {'message': 'This resource does not exist.'}:
+#                 raise exceptions.NotFound()
+#             if tracks == {'message': 'This resource does not exist.'}:
+#                 raise exceptions.NotFound()
+#             tracklist = getPlayListURLs(playlist)
+#             # print('here2')
+#             client.set(key, tracklist, expire=60)
+#             # print('here3')
+#             object = [playlist]
+#             print(object)
+#             xspf_playlist = getTrackInfoFromURL(tracklist, tracks, playlist)
+#         else:
+#             print("cached")
+#             # xspf_playlist = getTrackInfoFromURL(cache, tracks, playlist)
+#         return xspf_playlist.toXml(), status.HTTP_200_OK
+#     except Exception as e:
+#         return { 'error': str(e) }, status.HTTP_404_NOT_FOUND
+
+
+
+
 @app.route("/api/v1/collections/playlists/<string:playTitle>.xspf", methods = ['GET'])
 def generate_xspf(playTitle):
     try:
+        key = playTitle
+        key = key.replace(" ", "_")
+        client = base.Client(('localhost', 11211),serializer=json_serializer,deserializer=json_deserializer)
         playlistURL = "http://localhost:8000/api/v1/collections/playlists/" + playTitle
-        results = requests.get(playlistURL).json()
-        playlist = results[0]
-        tracks = requests.get("http://localhost:8000/api/v1/collections/tracks/all").json()
-        if playlist == {'message': 'This resource does not exist.'}:
-            raise exceptions.NotFound
-        if tracks == {'message': 'This resource does not exist.'}:
-            raise exceptions.NotFound
-        tracklist = getPlayListURLs(playlist)
-        print(tracklist[0])
-        print(playlist['playDesc'])
-        xspf_playlist = getTrackInfoFromURL(tracklist, tracks, playlist)
+        cache = client.get(key)
+        if cache is None:
+            cacheList=[]
+            results = requests.get(playlistURL).json()
+            playlist = results[0]
+            tracks = requests.get("http://localhost:8000/api/v1/collections/tracks/all").json()
+            if playlist == {'message': 'This resource does not exist.'}:
+                raise exceptions.NotFound
+            if tracks == {'message': 'This resource does not exist.'}:
+                raise exceptions.NotFound
+            tracklist = getPlayListURLs(playlist)
+            cacheList.append(tracklist)
+            cacheList.append(tracks)
+            cacheList.append(playlist)
+            client.set(key, cacheList, expire=60)
+            xspf_playlist = getTrackInfoFromURL(tracklist, tracks, playlist)
+        else:
+            tracklist = cache[0]
+            tracks = cache[1]
+            playlist = cache[2]
+            xspf_playlist = getTrackInfoFromURL(tracklist, tracks, playlist)
         return xspf_playlist.toXml(), status.HTTP_200_OK
     except Exception as e:
         return { 'error': str(e) }, status.HTTP_404_NOT_FOUND
+
+# if __name__ =="__main__":
+#     playTitle = "Playlist 00"
+#     generate_xspf(playTitle)
