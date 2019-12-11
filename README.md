@@ -28,12 +28,12 @@ Duy Do - duy.ado@csu.fullerton.edu - Dev 1<br />
 <b>Notes:</b></br>
 &nbsp;&nbsp;<b>./first_run</b> will install pip3 so it asks for sudo. It then installs the packages in requirements.txt.
 &nbsp;&nbsp;<b>./first_run</b> will also drop the Scylla keyspace if exists and recreate keyspace and tables. (Make sure Scylla is running)
+&nbsp;&nbsp;<b>source</b> XSPF generator code is taken from here: https://github.com/alastair/xspf
 
 &nbsp;&nbsp;<b>Fast simple way to test XSPF</b>
-# 1: After having all service running, run the ./curl_requests.sh. This will add the users, tracks, playlist, and descriptions metadata to Cassandra
-# 2: Then upload a song to minio and name it song00.mp3 so that the url: http://localhost:8000/media/song00.mp3
-# 3: Then use this url to test our Playlist 00: http://127.0.0.1:5400/api/v1/collections/playlists/Playlist%2000.xspf
+&nbsp;&nbsp;<b>1: After having all service running, run the ./curl_requests.sh. This will add the users, tracks, playlist, and descriptions metadata to Cassandra</b>
+&nbsp;&nbsp;<b>2: Then upload a song to minio and name it song00.mp3 so that the url: http://localhost:8000/media/song00.mp3</b>
+&nbsp;&nbsp;<b>3: Then use this url to test our Playlist 00: http://127.0.0.1:5400/api/v1/collections/playlists/Playlist%2000.xspf</b>
 
-&nbsp;&nbsp;<b>source</b> XSPF generator code is taken from here: https://github.com/alastair/xspf
 
 # ***IMPORTANT***: Please keep foreman running with all the standard 3 instances for the microservices, except xspfApi. Because kong wills still direct traffics to offline instances.
