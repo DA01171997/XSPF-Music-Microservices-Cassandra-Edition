@@ -10,6 +10,10 @@ from pymemcache.client import base
 from pymemcache import fallback
 
 app = flask_api.FlaskAPI(__name__,static_url_path='')
+
+#the json_serializer and json_deserializer and base.Client() are taken from the pymemcache documentation website
+#https://pymemcache.readthedocs.io/en/latest/getting_started.html
+
 def json_serializer(key, value):
     if type(value) == str:
         return value, 1
@@ -101,7 +105,3 @@ def generate_xspf(playTitle):
         return xspf_playlist.toXml(), status.HTTP_200_OK
     except Exception as e:
         return { 'error': str(e) }, status.HTTP_404_NOT_FOUND
-
-# if __name__ =="__main__":
-#     playTitle = "Playlist 00"
-#     generate_xspf(playTitle)
