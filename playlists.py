@@ -7,10 +7,16 @@ import pugsql
 from cassandra.cluster import Cluster
 cluster = Cluster(['172.17.0.2'])
 session = cluster.connect()
-session.set_keyspace('music')
+#session.set_keyspace('music')
 
 app = flask_api.FlaskAPI(__name__)
 app.config.from_envvar("APP_CONFIG")
+
+def checkForKeyspace():
+    if 'music' not in cluster.metadata.keyspaces:
+        return {"Error" : "KEYSPACE NOT FOUND"}, status.HTTP_500_INTERNAL_SERVER_ERROR
+    else:
+        return True
 
 def validContentType(request, type='application/json'):
     if request.headers.has_key('Content-Type'):
@@ -24,6 +30,11 @@ def home():
     
 @app.route("/api/v1/collections/playlists/all", methods = ["GET"])
 def allPlaylists():
+    checker = checkForKeyspace()
+    if checker is not True:
+        return checker
+    else:
+        session.set_keyspace('music')
     select_all_playlist_cql = "SELECT * FROM music.playlists"
     rows = session.execute(select_all_playlist_cql)
     result = []
@@ -42,6 +53,11 @@ def allPlaylists():
 @app.route("/api/v1/collections/playlists/<string:playTitle>", methods = ["GET", "DELETE"])
 def filterPlaylistsByID(playTitle):
     if request.method == "GET":
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         select_playlist_withTitle_cql = "SELECT * FROM music.playlists WHERE playTitle='{}'".format(playTitle)
         rows = session.execute(select_playlist_withTitle_cql)
         result = []
@@ -57,6 +73,11 @@ def filterPlaylistsByID(playTitle):
         return { 'Error': "Not Found" }, status.HTTP_404_NOT_FOUND
     elif request.method == "DELETE":
         try:
+            checker = checkForKeyspace()
+            if checker is not True:
+                return checker
+            else:
+                session.set_keyspace('music')
             select_all_playlist_cql = "SELECT * FROM music.playlists WHERE playTitle='{}'".format(playTitle)
             rows = session.execute(select_all_playlist_cql)
             count = 0
@@ -76,6 +97,11 @@ def filterPlaylistsByID(playTitle):
 @app.route("/api/v1/collections/playlists/users/<string:username>/playlists", methods = ["GET"])
 def playlistByUsername(username):
     if request.method == "GET":
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         select_all_playlist_by_user_cql = "SELECT * FROM music.playlists WHERE playUserUserName='{}'".format(username)
         rows = session.execute(select_all_playlist_by_user_cql)
         result = []
@@ -94,6 +120,11 @@ def playlistByUsername(username):
 @app.route('/api/v1/collections/playlists', methods=['POST'])
 def playlists():
     if request.method == 'POST':
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         valid = validContentType(request)
         if valid is not True:
             return valid

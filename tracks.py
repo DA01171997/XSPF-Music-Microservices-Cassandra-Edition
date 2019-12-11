@@ -9,11 +9,17 @@ import uuid
 from cassandra.cluster import Cluster
 cluster = Cluster(['172.17.0.2'])
 session = cluster.connect()
-session.set_keyspace('music')
+#session.set_keyspace('music')
 
 
 app = flask_api.FlaskAPI(__name__)
 app.config.from_envvar("APP_CONFIG")
+
+def checkForKeyspace():
+    if 'music' not in cluster.metadata.keyspaces:
+        return {"Error" : "KEYSPACE NOT FOUND"}, status.HTTP_500_INTERNAL_SERVER_ERROR
+    else:
+        return True
 
 def validContentType(request, type='application/json'):
     if request.headers.has_key('Content-Type'):
@@ -28,6 +34,11 @@ def home():
 @app.route("/api/v1/collections/tracks/all", methods = ["GET"])
 def allTracks():
     try:
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         select_all_track_cql = "SELECT * FROM music.tracks"
         rows = session.execute(select_all_track_cql)
         result = []
@@ -50,6 +61,11 @@ def allTracks():
 def filterTrackByID(trackTitle,trackArtist):
     if request.method == "GET":
         try:
+            checker = checkForKeyspace()
+            if checker is not True:
+                return checker
+            else:
+                session.set_keyspace('music')
             select_all_track_cql = "SELECT * FROM music.tracks WHERE trackTitle='{}' AND trackArtist= '{}'".format(trackTitle,trackArtist)
             rows = session.execute(select_all_track_cql)
             for row in rows:
@@ -69,6 +85,11 @@ def filterTrackByID(trackTitle,trackArtist):
         return { 'Error': "Not Found" }, status.HTTP_404_NOT_FOUND
     elif request.method == "DELETE":
         try:
+            checker = checkForKeyspace()
+            if checker is not True:
+                return checker
+            else:
+                session.set_keyspace('music')
             select_all_track_cql = "SELECT * FROM music.tracks WHERE trackTitle='{}' AND trackArtist= '{}'".format(trackTitle,trackArtist)
             rows = session.execute(select_all_track_cql)
             count = 0
@@ -88,17 +109,32 @@ def filterTrackByID(trackTitle,trackArtist):
 @app.route('/api/v1/collections/tracks', methods=['GET','POST', 'PATCH'])
 def tracks():
     if request.method == 'GET':
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         results = filterTracks(request.args)
         if len(results) is 0:
             return { 'Error': str("Not Found") }, status.HTTP_404_NOT_FOUND
         else:
             return results
     if request.method == 'POST':
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         valid = validContentType(request)
         if valid is not True:
             return valid
         return createTrack(request.data)
     elif request.method == 'PATCH':
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         valid = validContentType(request)
         if valid is not True:
             return valid

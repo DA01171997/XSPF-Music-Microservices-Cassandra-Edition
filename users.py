@@ -8,10 +8,16 @@ from cassandra.cluster import Cluster
 
 cluster = Cluster(['172.17.0.2'])
 session = cluster.connect()
-session.set_keyspace('music')
+#session.set_keyspace('music')
 
 app = flask_api.FlaskAPI(__name__)
 app.config.from_envvar('APP_CONFIG')
+
+def checkForKeyspace():
+    if 'music' not in cluster.metadata.keyspaces:
+        return {"Error" : "KEYSPACE NOT FOUND"}, status.HTTP_500_INTERNAL_SERVER_ERROR
+    else:
+        return True
 
 def validContentType(request, type='application/json'):
     if request.headers.has_key('Content-Type'):
@@ -28,6 +34,11 @@ def home():
 def register():
     if request.method=='GET':
         try:
+            checker = checkForKeyspace()
+            if checker is not True:
+                return checker
+            else:
+                session.set_keyspace('music')
             cql = "SELECT * FROM users;"
             rows = session.execute(cql)
             count = 0
@@ -42,6 +53,11 @@ def register():
         except Exception as e:
             return { 'Error': str(e) }, status.HTTP_409_CONFLICT
     elif request.method=='POST':
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         valid = validContentType(request)
         if valid is not True:
             return valid
@@ -77,8 +93,18 @@ def create_user():
 @app.route('/api/v1/users/<string:username>', methods=['GET', 'DELETE'])
 def user_username(username):
     if request.method=='GET':
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         return get_user_by_username(username)
     elif request.method=='DELETE':
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         return delete_user_by_username(username)
 
 
@@ -120,6 +146,11 @@ def delete_user_by_username(username):
 @app.route('/api/v1/users/login', methods=['POST'])
 def login():
     if request.method=='POST':
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         valid = validContentType(request)
         if valid is not True:
             return valid
@@ -152,6 +183,11 @@ def authenticate():
 @app.route('/api/v1/users/<string:username>/password', methods=['PATCH'])
 def password(username):
     if request.method=='PATCH':
+        checker = checkForKeyspace()
+        if checker is not True:
+            return checker
+        else:
+            session.set_keyspace('music')
         valid = validContentType(request)
         if valid is not True:
             return valid

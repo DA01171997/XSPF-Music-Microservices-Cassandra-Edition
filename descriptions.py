@@ -7,12 +7,17 @@ from flask_api import status, exceptions
 from cassandra.cluster import Cluster
 cluster = Cluster(['172.17.0.2'])
 session = cluster.connect()
-session.set_keyspace('music')
+#session.set_keyspace('music')
 
 
 app = flask_api.FlaskAPI(__name__,static_url_path='')
 app.config.from_envvar('APP_CONFIG')
 
+def checkForKeyspace():
+    if 'music' not in cluster.metadata.keyspaces:
+        return {"Error" : "KEYSPACE NOT FOUND"}, status.HTTP_500_INTERNAL_SERVER_ERROR
+    else:
+        return True
 
 #used to check if POST request header is application/json
 def validContentType(request, type='application/json'):
@@ -30,6 +35,11 @@ def home():
 @app.route('/api/v1/descriptions/', methods=['POST'])
 def description():
 	if request.method=='POST':
+		checker = checkForKeyspace()
+		if checker is not True:
+			return checker
+		else:
+			session.set_keyspace('music')
 		return create_description()
 
 def create_description():
@@ -48,6 +58,11 @@ def create_description():
 @app.route('/api/v1/descriptions/users/<string:username>/descriptions', methods=['GET'])
 def user_description(username):
 	if request.method =='GET':
+		checker = checkForKeyspace()
+		if checker is not True:
+			return checker
+		else:
+			session.set_keyspace('music')
 		return filter_descriptions(request.args, username)
 
 def filter_descriptions(query_parameters, username):
