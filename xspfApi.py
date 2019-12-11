@@ -10,6 +10,19 @@ from pymemcache.client import base
 from pymemcache import fallback
 
 app = flask_api.FlaskAPI(__name__,static_url_path='')
+def json_serializer(key, value):
+    if type(value) == str:
+        return value, 1
+    return json.dumps(value), 2
+
+def json_deserializer(key, value, flags):
+   if flags == 1:
+       return value
+   if flags == 2:
+       return json.loads(value)
+   raise Exception("Unknown serialization format")
+
+client = base.Client(('localhost', 11211),serializer=json_serializer,deserializer=json_deserializer)
 
 def getPlayListByID(id, playlists):
     for playlist in playlists:
@@ -18,13 +31,20 @@ def getPlayListByID(id, playlists):
 
 def getDescriptionByUrl(playUserUserName, url):
     url = "http://127.0.0.1:8000/api/v1/descriptions/users/{}/descriptions?trackMediaURL={}".format(playUserUserName,url)
-    response = requests.get(url)
-    if response.status_code == 200:
-        desc = response.json()
-        desc = desc[0]['descriptionDesc']
+    key = playUserUserName + url + "description"
+    key = key.replace(" ", "_")
+    cache = client.get(key)
+    if cache is None:
+        response = requests.get(url)
+        if response.status_code == 200:
+            desc = response.json()
+            desc = desc[0]['descriptionDesc']
+        else:
+            desc = ""
+        client.set(key, desc, expire=60)
+        return desc
     else:
-        desc = ""
-    return desc
+        return cache.decode("utf-8")
 
 def getPlayListURLs(playlist):
     tracklist = playlist['playListOfTracks']
@@ -49,57 +69,6 @@ def getTrackInfoFromURL(urls, tracks, playlist):
                 x.add_track(tr)
     return x
 
-def json_serializer(key, value):
-    if type(value) == str:
-        return value, 1
-    return json.dumps(value), 2
-
-def json_deserializer(key, value, flags):
-   if flags == 1:
-       return value
-   if flags == 2:
-       return json.loads(value)
-   raise Exception("Unknown serialization format")
-
-
-# @app.route("/api/v1/collections/playlists/<string:playTitle>.xspf", methods = ['GET'])
-# def generate_xspf(playTitle):
-#     try:
-#         key = playTitle
-#         key = key.replace(" ", "_")
-#         client = base.Client(('localhost', 11211),serializer=json_serializer,deserializer=json_deserializer)
-#         playlistURL = "http://localhost:8000/api/v1/collections/playlists/" + playTitle
-#         cache = client.get(key)
-#         # print(key)
-#         if cache is None:
-#             print("not cached")
-#             # print('here0')
-#             results = requests.get(playlistURL).json()
-#             # print('here022')
-#             # print(results)
-#             playlist = results[0]
-#             # print('here0223')
-#             tracks = requests.get("http://localhost:8000/api/v1/collections/tracks/all").json()
-#             # print('here1')
-#             if playlist == {'message': 'This resource does not exist.'}:
-#                 raise exceptions.NotFound()
-#             if tracks == {'message': 'This resource does not exist.'}:
-#                 raise exceptions.NotFound()
-#             tracklist = getPlayListURLs(playlist)
-#             # print('here2')
-#             client.set(key, tracklist, expire=60)
-#             # print('here3')
-#             object = [playlist]
-#             print(object)
-#             xspf_playlist = getTrackInfoFromURL(tracklist, tracks, playlist)
-#         else:
-#             print("cached")
-#             # xspf_playlist = getTrackInfoFromURL(cache, tracks, playlist)
-#         return xspf_playlist.toXml(), status.HTTP_200_OK
-#     except Exception as e:
-#         return { 'error': str(e) }, status.HTTP_404_NOT_FOUND
-
-
 
 
 @app.route("/api/v1/collections/playlists/<string:playTitle>.xspf", methods = ['GET'])
@@ -107,7 +76,6 @@ def generate_xspf(playTitle):
     try:
         key = playTitle
         key = key.replace(" ", "_")
-        client = base.Client(('localhost', 11211),serializer=json_serializer,deserializer=json_deserializer)
         playlistURL = "http://localhost:8000/api/v1/collections/playlists/" + playTitle
         cache = client.get(key)
         if cache is None:

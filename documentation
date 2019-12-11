@@ -8,7 +8,7 @@ XSPF Microservice
     URL: /api/v1/collections/playlists/<int:id>.xspf
     Usage:
         GET: Create and return an xspf file for use
-            Example: http://127.0.0.1:5400/api/v1/collections/playlists/1.xspf
+            Example: http://127.0.0.1:5400/api/v1/collections/playlists/Playlist%2000.xspf
 
 Descriptions Microservice
     URL: /api/v1/descriptions/
