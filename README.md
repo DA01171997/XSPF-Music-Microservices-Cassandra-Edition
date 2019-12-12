@@ -1,5 +1,6 @@
 # CPSC449-Project
-project3-specification: https://docs.google.com/document/d/1W7tUT0LMe-fvmGY8d8TbdpE-XIStVdXS2ocA5_hdMj0/edit <br />
+Project3-specification: https://docs.google.com/document/d/1W7tUT0LMe-fvmGY8d8TbdpE-XIStVdXS2ocA5_hdMj0/edit <br />
+Github: https://github.com/DA01171997/XSPF-Music-Microservices-Cassandra-Edition  <br />
 <b>Team Members</b><br />
 Wellson Pan - WellsonPan@csu.fullerton.edu - Ops<br />
 Liam Fitzpatrick - lfitzpatrick0@csu.fullerton.edu - Dev 2<br />
