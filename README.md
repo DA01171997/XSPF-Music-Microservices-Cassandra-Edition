@@ -11,7 +11,7 @@ Duy Do - duy.ado@csu.fullerton.edu - Dev 1<br />
 &nbsp;&nbsp;&nbsp;&nbsp;sudo kong start <br /> 
 &nbsp;&nbsp;&nbsp;&nbsp;./add_services.sh <br /> 
 &nbsp;&nbsp;&nbsp;&nbsp;sudo ./minio server /data  <br /> 
-&nbsp;&nbsp;&nbsp;&nbsp;./first_run (in seperate terminal) <br /> 
+&nbsp;&nbsp;&nbsp;&nbsp;./first_run (in seperate terminal, make sure scylla db is fully up before do this step or making requests.) <br /> 
 &nbsp;&nbsp;&nbsp;&nbsp;./curl_requests  (in seperate terminal, make sure scylla db is fully up before do this step or making requests.) <br />
 &nbsp;&nbsp;else:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;foreman start <br />
