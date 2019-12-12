@@ -11,8 +11,8 @@ Duy Do - duy.ado@csu.fullerton.edu - Dev 1<br />
 &nbsp;&nbsp;&nbsp;&nbsp;sudo kong start <br /> 
 &nbsp;&nbsp;&nbsp;&nbsp;./add_services.sh <br /> 
 &nbsp;&nbsp;&nbsp;&nbsp;sudo ./minio server /data  <br /> 
-&nbsp;&nbsp;&nbsp;&nbsp;./first_run (in seperate terminal, make sure scylla db is fully up before do this step or making requests.) <br /> 
-&nbsp;&nbsp;&nbsp;&nbsp;./curl_requests  (in seperate terminal, make sure scylla db is fully up before do this step or making requests.) <br />
+&nbsp;&nbsp;&nbsp;&nbsp;./first_run.sh (in seperate terminal, make sure scylla db is fully up before do this step or making requests.) <br /> 
+&nbsp;&nbsp;&nbsp;&nbsp;./curl_requests.sh  (in seperate terminal, make sure scylla db is fully up before do this step or making requests.) <br />
 &nbsp;&nbsp;else:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;foreman start <br />
 
@@ -30,7 +30,7 @@ Duy Do - duy.ado@csu.fullerton.edu - Dev 1<br />
 &nbsp;&nbsp;cql/init.cql<br />
 
 <b>Notes:</b></br>
-&nbsp;&nbsp;<b>./first_run</b> will also drop the Scylla keyspace if exists and recreate keyspace and tables. (Make sure Scylla is running)</br>
+&nbsp;&nbsp;<b>./first_run.sh</b> will also drop the Scylla keyspace if exists and recreate keyspace and tables. (Make sure Scylla is running)</br>
 &nbsp;&nbsp;<b>source</b> XSPF generator code is taken from here: https://github.com/alastair/xspf</br>
 
 &nbsp;&nbsp;<b>Fast simple way to test XSPF</b></br>
