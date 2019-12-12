@@ -7,8 +7,11 @@ Duy Do - duy.ado@csu.fullerton.edu - Dev 1<br />
 
 <b>Usage:<br /></b> 
 &nbsp;&nbsp;if first run then:<br />
-&nbsp;&nbsp;&nbsp;&nbsp;./first_run <br /> 
-&nbsp;&nbsp;&nbsp;&nbsp;./curl_requests <br />
+&nbsp;&nbsp;&nbsp;&nbsp;sudo kong start <br /> 
+&nbsp;&nbsp;&nbsp;&nbsp;./add_services.sh <br /> 
+&nbsp;&nbsp;&nbsp;&nbsp;sudo ./minio server /data  <br /> 
+&nbsp;&nbsp;&nbsp;&nbsp;./first_run (in seperate terminal) <br /> 
+&nbsp;&nbsp;&nbsp;&nbsp;./curl_requests  (in seperate terminal, make sure scylla db is fully up before do this step or making requests.) <br />
 &nbsp;&nbsp;else:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;foreman start <br />
 
@@ -26,7 +29,6 @@ Duy Do - duy.ado@csu.fullerton.edu - Dev 1<br />
 &nbsp;&nbsp;cql/init.cql<br />
 
 <b>Notes:</b></br>
-&nbsp;&nbsp;<b>./first_run</b> will install pip3 so it asks for sudo. It then installs the packages in requirements.txt.</br>
 &nbsp;&nbsp;<b>./first_run</b> will also drop the Scylla keyspace if exists and recreate keyspace and tables. (Make sure Scylla is running)</br>
 &nbsp;&nbsp;<b>source</b> XSPF generator code is taken from here: https://github.com/alastair/xspf</br>
 
@@ -36,4 +38,4 @@ Duy Do - duy.ado@csu.fullerton.edu - Dev 1<br />
 &nbsp;&nbsp;<b>3: Then use this url to test our Playlist 00: http://127.0.0.1:5400/api/v1/collections/playlists/Playlist%2000.xspf</b></br>
 
 
-# ***IMPORTANT***: Please keep foreman running with all the standard 3 instances for the microservices, except xspfApi. Because kong wills still direct traffics to offline instances.
+# ***IMPORTANT***: Please don't change the Procfile, and just run "foreman start" with all the standard 3 instances for the microservices, except xspfApi. Because kong wills still direct traffics to offline upstreams. Also please make sure Scylla is fully up and running before running curl_requests.sh script or try any requests. We also have issue when testing in Tuffix, and sometime we can't drop scylla keyspace or data correctly (check out dropkeyspace.PNG to see the issue). So if you tried to run signup for another users again, before Scylla drop the keyspace and tables, you will get a 409. If this happens just restart your VM, or drop the scylla docker image and container and reinstall the docker image.
